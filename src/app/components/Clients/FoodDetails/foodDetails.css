@@ -1,0 +1,744 @@
+/* ==========================================================================
+   FOOD DETAILS (/foods/[id]) — ফরমাল, শান্ত লেআউট
+   --------------------------------------------------------------------------
+   আগের সংস্করণে ছবিটা "প্লেটের" উপরে ভাসত, মাউসের দিকে হেলে পড়ত, রিং ঘুরত।
+   এখন সেটা নেই — বাঁ পাশে একটা সাধারণ ছবির কার্ড (ডেস্কটপে sticky), ডান পাশে
+   সব তথ্য উপর-নিচে সাজানো: শিরোনাম → অর্ডার কার্ড → বিবরণ → এক নজরে →
+   শেফের নোট। কোনো ট্যাব নেই, সব একসাথেই পড়া যায়।
+
+   টাইপোগ্রাফি পুরো অ্যাপের মতোই — একটাই ফন্ট (--font-body), পার্থক্য শুধু
+   ওজন আর আকারে। রঙ সব globals.css এর টোকেন থেকে।
+   ========================================================================== */
+
+.fd {
+  position: relative;
+  min-height: 100vh;
+  padding-bottom: 110px;
+  background: var(--color-canvas);
+}
+@media (min-width: 1024px) {
+  .fd {
+    padding-bottom: 60px;
+  }
+}
+
+/* ---------- ব্রেডক্রাম্ব ---------- */
+.fd__crumbs {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  overflow-x: auto;
+  margin-inline: auto;
+  max-width: 1420px;
+  padding: 20px 22px 0;
+  font-size: 12.5px;
+  white-space: nowrap;
+  color: var(--color-ink-soft);
+}
+@media (min-width: 1024px) {
+  .fd__crumbs {
+    padding: 26px 48px 0;
+  }
+}
+.fd__crumbs a:hover {
+  color: var(--color-brand);
+}
+.fd__crumbs svg {
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+  color: var(--color-ink-faint);
+}
+.fd__crumbs strong {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+
+/* ---------- উপরের দুই কলাম ---------- */
+.fd__top {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  margin-inline: auto;
+  max-width: 1420px;
+  padding: 20px 22px;
+}
+@media (min-width: 1024px) {
+  .fd__top {
+    grid-template-columns: minmax(0, 0.95fr) minmax(0, 1fr);
+    gap: 48px;
+    padding: 26px 48px 40px;
+    align-items: start;
+  }
+}
+
+/* ==========================================================================
+   বাঁ পাশ — ছবির কার্ড
+   ========================================================================== */
+.fd-gallery {
+  position: relative;
+}
+@media (min-width: 1024px) {
+  /* ডান কলামটা লম্বা, তাই স্ক্রল করলেও ছবিটা চোখের সামনে থাকে */
+  .fd-gallery {
+    position: sticky;
+    top: 24px;
+  }
+}
+
+.fd-gallery__frame {
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+@media (min-width: 640px) {
+  .fd-gallery__frame {
+    aspect-ratio: 1 / 1;
+  }
+}
+.fd-gallery__frame img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+.fd-gallery__empty {
+  display: grid;
+  height: 100%;
+  width: 100%;
+  place-items: center;
+  font-size: 13px;
+  color: var(--color-ink-faint);
+}
+
+.fd-gallery__back {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  z-index: 3;
+  display: grid;
+  height: 38px;
+  width: 38px;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: border-color 0.18s ease, color 0.18s ease;
+}
+.fd-gallery__back:hover {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+}
+@media (min-width: 1024px) {
+  .fd-gallery__back {
+    display: none;
+  }
+}
+
+/* ব্যাজ — ছবির উপরে, কোনো আভা ছাড়া */
+.fd-gallery__badges {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+.fd-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 5px 11px;
+  border-radius: var(--radius-xs);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: var(--color-ink-invert);
+}
+.fd-badge--off {
+  background: var(--color-brand);
+}
+.fd-badge--spicy {
+  background: var(--color-chili);
+}
+
+.fd-gallery__out {
+  position: absolute;
+  inset: 0;
+  z-index: 4;
+  display: grid;
+  place-items: center;
+  background: color-mix(in srgb, var(--color-surface) 72%, transparent);
+}
+.fd-gallery__out span {
+  padding: 7px 16px;
+  border-radius: var(--radius-xs);
+  background: var(--color-ink);
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: var(--color-ink-invert);
+}
+
+/* ---------- থাম্বনেইল ---------- */
+.fd-thumbs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.fd-thumb {
+  position: relative;
+  overflow: hidden;
+  height: 68px;
+  width: 68px;
+  flex-shrink: 0;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 0.18s ease;
+}
+@media (min-width: 640px) {
+  .fd-thumb {
+    height: 78px;
+    width: 78px;
+  }
+}
+.fd-thumb:hover {
+  border-color: var(--color-border-strong);
+}
+.fd-thumb.is-active {
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 1px var(--color-brand);
+}
+.fd-thumb img {
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+}
+
+/* ==========================================================================
+   ডান পাশ — তথ্য, অর্ডার কার্ড, তারপর বিবরণ
+   ========================================================================== */
+.fd-info {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.fd-info__eyebrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+}
+.fd-info__cat {
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+}
+.fd-info__branch {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11.5px;
+  color: var(--color-ink-soft);
+}
+.fd-info__branch svg {
+  width: 13px;
+  height: 13px;
+}
+
+.fd-info__title {
+  margin-top: 8px;
+  font-family: var(--font-body);
+  font-size: clamp(24px, 3.2vw, 34px);
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+  text-wrap: balance;
+}
+
+.fd-info__meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 16px;
+  margin-top: 10px;
+  font-size: 12.5px;
+  color: var(--color-ink-soft);
+}
+.fd-info__meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.fd-info__meta svg {
+  width: 14px;
+  height: 14px;
+}
+.fd-info__rating {
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.fd-info__rating svg {
+  fill: var(--color-saffron);
+  color: var(--color-saffron);
+}
+
+/* ---------- ছোট তথ্য-চিপ ---------- */
+.fd-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.fd-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 7px 13px;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--color-ink);
+}
+.fd-chip svg {
+  width: 14px;
+  height: 14px;
+  color: var(--color-ink-faint);
+}
+.fd-chip--spice {
+  border-color: color-mix(in srgb, var(--color-chili) 26%, transparent);
+  background: var(--color-chili-soft);
+  color: var(--color-chili-dark);
+}
+.fd-chip--spice svg {
+  color: var(--color-chili);
+}
+.fd-chip--spice .is-off {
+  color: color-mix(in srgb, var(--color-chili) 22%, transparent);
+}
+.fd-chip--warn {
+  border-color: color-mix(in srgb, var(--color-saffron) 40%, transparent);
+  background: var(--color-saffron-soft);
+  color: var(--color-saffron-dark);
+}
+.fd-chip--warn svg {
+  color: var(--color-saffron-dark);
+}
+
+/* ---------- অর্ডার কার্ড ---------- */
+.fd-order {
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+@media (min-width: 640px) {
+  .fd-order {
+    padding: 24px;
+  }
+}
+
+.fd-order__price {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 10px;
+}
+.fd-order__now {
+  font-family: var(--font-body);
+  font-size: clamp(26px, 3vw, 32px);
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+.fd-order__was {
+  font-size: 16px;
+  color: var(--color-ink-faint);
+  text-decoration: line-through;
+}
+.fd-order__save {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: var(--radius-xs);
+  background: var(--color-herb-soft);
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--color-herb-dark);
+}
+
+.fd-order__label {
+  display: block;
+  margin: 20px 0 10px;
+  font-size: 10.5px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+/* সাইজ বাছাই */
+.fd-sizes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.fd-size {
+  position: relative;
+  min-width: 96px;
+  padding: 10px 15px;
+  text-align: left;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+  cursor: pointer;
+  transition: border-color 0.18s ease, background 0.18s ease;
+}
+.fd-size:hover {
+  border-color: var(--color-border-strong);
+}
+.fd-size b {
+  display: block;
+  padding-right: 18px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.fd-size i {
+  display: block;
+  margin-top: 2px;
+  font-size: 12.5px;
+  font-style: normal;
+  color: var(--color-ink-soft);
+}
+.fd-size.is-active {
+  border-color: var(--color-brand);
+  background: var(--color-brand-tint);
+  box-shadow: 0 0 0 1px var(--color-brand);
+}
+.fd-size.is-active b,
+.fd-size.is-active i {
+  color: var(--color-brand-dark);
+}
+.fd-size__tick {
+  position: absolute;
+  right: 8px;
+  top: 8px;
+  display: grid;
+  height: 16px;
+  width: 16px;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--color-brand);
+  color: var(--color-ink-invert);
+}
+.fd-size__tick svg {
+  width: 10px;
+  height: 10px;
+}
+
+/* পরিমাণ + কার্ট */
+.fd-order__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.fd-qty {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  border-radius: var(--radius-xs);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.fd-qty button {
+  display: grid;
+  height: 44px;
+  width: 44px;
+  place-items: center;
+  color: var(--color-ink);
+  cursor: pointer;
+  transition: background 0.16s ease, color 0.16s ease;
+}
+.fd-qty button:hover:not(:disabled) {
+  background: var(--color-surface-soft);
+  color: var(--color-brand);
+}
+.fd-qty button:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+.fd-qty span {
+  width: 34px;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink);
+}
+
+.fd-cart {
+  display: inline-flex;
+  height: 46px;
+  flex: 1;
+  min-width: 190px;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  padding: 0 22px;
+  border-radius: var(--radius-xs);
+  font-size: 13.5px;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  color: var(--color-ink-invert);
+  background: var(--color-brand);
+  cursor: pointer;
+  transition: background 0.18s ease;
+}
+.fd-cart:hover:not(:disabled) {
+  background: var(--color-brand-dark);
+}
+.fd-cart svg {
+  width: 17px;
+  height: 17px;
+}
+.fd-cart.is-added {
+  background: var(--color-herb);
+}
+.fd-cart:disabled {
+  cursor: not-allowed;
+  color: var(--color-ink-faint);
+  background: var(--color-surface-soft);
+}
+
+/* ---------- ভরসার সারি ---------- */
+.fd-trust {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+.fd-trust__item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 14px 8px;
+  text-align: center;
+  border-left: 1px solid var(--color-border);
+}
+.fd-trust__item:first-child {
+  border-left: 0;
+}
+.fd-trust__item svg {
+  width: 17px;
+  height: 17px;
+  color: var(--color-ink-faint);
+}
+.fd-trust__item span {
+  font-size: 11.5px;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--color-ink-soft);
+}
+
+/* ==========================================================================
+   বিবরণ / এক নজরে / শেফের নোট — ট্যাব নয়, ডান কলামেই উপর-নিচে
+   ========================================================================== */
+.fd-panel {
+  padding: 20px;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+@media (min-width: 640px) {
+  .fd-panel {
+    padding: 22px 24px;
+  }
+}
+
+.fd-panel__title {
+  margin-bottom: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--color-border);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-ink-faint);
+}
+
+.fd-panel p {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--color-ink-soft);
+}
+
+/* এক নজরে — লেবেল/মান জোড়ার তালিকা */
+.fd-specs {
+  display: grid;
+  grid-template-columns: 1fr;
+}
+@media (min-width: 640px) {
+  .fd-specs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 28px;
+  }
+}
+.fd-spec {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px dashed var(--color-border);
+}
+/* শেষ সারির নিচে আর দাগ নয় — কার্ডের বর্ডারই যথেষ্ট */
+.fd-spec:last-child {
+  border-bottom: 0;
+}
+@media (min-width: 640px) {
+  .fd-specs > .fd-spec:nth-last-child(-n + 2) {
+    border-bottom: 0;
+  }
+}
+.fd-spec dt {
+  font-size: 12.5px;
+  color: var(--color-ink-soft);
+}
+.fd-spec dd {
+  font-size: 13px;
+  font-weight: 700;
+  text-align: right;
+  text-transform: capitalize;
+  color: var(--color-ink);
+}
+
+.fd-chef {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.fd-chef__avatar {
+  display: grid;
+  height: 46px;
+  width: 46px;
+  flex-shrink: 0;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--color-border);
+  background: var(--color-surface-soft);
+  color: var(--color-ink-soft);
+}
+.fd-chef__avatar svg {
+  width: 21px;
+  height: 21px;
+}
+.fd-chef b {
+  font-size: 14.5px;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.fd-chef p {
+  margin-top: 2px;
+  font-size: 13px;
+  color: var(--color-ink-soft);
+}
+
+/* ==========================================================================
+   মোবাইলের নিচের ফিক্সড বার
+   ========================================================================== */
+.fd-sticky {
+  position: fixed;
+  inset-inline: 0;
+  bottom: 0;
+  z-index: 30;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  border-top: 1px solid var(--color-border);
+  background: var(--color-surface);
+}
+@media (min-width: 1024px) {
+  .fd-sticky {
+    display: none;
+  }
+}
+.fd-sticky .fd-cart {
+  min-width: 0;
+  padding-inline: 14px;
+  font-size: 12.5px;
+}
+.fd-sticky .fd-qty button {
+  height: 42px;
+  width: 42px;
+}
+
+/* ==========================================================================
+   লোডিং / নট ফাউন্ড
+   ========================================================================== */
+.fd-skel {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 28px;
+  margin-inline: auto;
+  max-width: 1420px;
+  padding: 40px 22px;
+}
+@media (min-width: 1024px) {
+  .fd-skel {
+    grid-template-columns: 1fr 1fr;
+    gap: 48px;
+    padding: 48px;
+  }
+}
+
+.fd-404 {
+  display: grid;
+  min-height: 70vh;
+  place-items: center;
+  align-content: center;
+  gap: 14px;
+  padding: 40px 24px;
+  text-align: center;
+}
+.fd-404 svg {
+  width: 54px;
+  height: 54px;
+  color: var(--color-border-strong);
+}
+.fd-404 h1 {
+  font-size: 24px;
+  font-weight: 800;
+  color: var(--color-ink);
+}
+.fd-404 p {
+  max-width: 380px;
+  font-size: 13.5px;
+  line-height: 1.8;
+  color: var(--color-ink-soft);
+}

@@ -1,0 +1,598 @@
+@import "tailwindcss";
+
+/* ==========================================================================
+   RESTAURANT APP — SINGLE SOURCE OF TRUTH FOR THE WHOLE APP
+   --------------------------------------------------------------------------
+   এখানে একটা ভ্যালু বদলালেই পুরো অ্যাপে (public site + admin dashboard)
+   সব জায়গায় সেই রঙ / ফন্ট / রেডিয়াস বদলে যাবে।
+
+   কোনো কম্পোনেন্টে সরাসরি hex (#D70F64) লিখবেন না —
+   সবসময় টোকেন ব্যবহার করুন: bg-brand / text-ink / var(--color-brand)
+   অথবা src/theme/theme.ts থেকে BRAND ইমপোর্ট করুন।
+
+   টোকেনগুলো Tailwind v4 এর @theme এ আছে, তাই এগুলো একই সাথে
+   CSS ভ্যারিয়েবল (var(--color-brand)) এবং
+   Tailwind ইউটিলিটি ক্লাস (bg-brand, text-brand, border-brand) দুটোই।
+   ========================================================================== */
+
+@theme {
+  /* ======================================================================
+     1. BRAND — Madina Diamond (Royal Blue & Diamond Silver/Gold)
+     ====================================================================== */
+  --color-brand: #0d6efd;         /* প্রাইমারি — লোগোর রয়্যাল ব্লু (CTA, active, link) */
+  --color-brand-dark: #084298;   /* hover / pressed */
+  --color-brand-darker: #052c65; /* gradient এর নিচের শেড */
+  --color-brand-soft: #cfe2ff;   /* হালকা টিন্ট — badge, selected chip */
+  --color-brand-tint: #f8f9fa;   /* খুব হালকা — section background */
+
+  /* ---------- Secondary / Accent (Jewellery Gold & Diamond) ---------- */
+  --color-gold: #c5a059;         /* লাক্সারি গোল্ড — rating star, offer ribbon, highlights */
+  --color-gold-dark: #997a38;
+  --color-gold-soft: #fcf8f2;
+
+  --color-diamond: #e2e8f0;      /* সিলভার / ডায়মন্ড শাইন */
+  --color-diamond-soft: #f1f5f9;
+
+  --color-herb: #198754;         /* সফল / instock / available */
+  --color-herb-dark: #146c43;
+  --color-herb-soft: #d1e7dd;
+
+  --color-chili: #dc3545;         /* danger / sale / cancel */
+  --color-chili-dark: #b02a37;
+  --color-chili-soft: #f8d7da;
+
+  --color-info: #0dcaf0;
+  --color-info-soft: #cff4fc;
+
+  /* ======================================================================
+     2. SURFACES — পাবলিক সাইট (Luxury Light)
+     ====================================================================== */
+  --color-background: #ffffff;   /* পেজ ব্যাকগ্রাউন্ড */
+  --color-canvas: #f8fafc;       /* সেকশন ব্যাকগ্রাউন্ড, প্রিমিয়াম গ্রে */
+  --color-surface: #ffffff;      /* কার্ড, মোডাল */
+  --color-surface-soft: #f1f5f9; /* hover, skeleton, secondary surface */
+  --color-border: #e2e8f0;
+  --color-border-strong: #cbd5e1;
+
+  /* ---------- Text ---------- */
+  --color-ink: #0f172a;          /* প্রাইমারি টেক্সট (ডিপ রয়্যাল ডার্ক) */
+  --color-ink-soft: #475569;     /* সেকেন্ডারি */
+  --color-ink-faint: #94a3b8;    /* muted / placeholder */
+  --color-ink-invert: #ffffff;   /* রঙিন ব্যাকগ্রাউন্ডের উপর */
+
+  /* ======================================================================
+     3. SURFACES — অ্যাডমিন ড্যাশবোর্ড (Luxury Dark Theme)
+     ====================================================================== */
+  --color-admin-bg: #030712;     /* পেজ */
+  --color-admin-sidebar: #0b0f19;/* সাইডবার */
+  --color-admin-card: #111827;   /* কার্ড / প্যানেল */
+  --color-admin-elevated: #1f2937;/* zebra row, hover surface */
+  --color-admin-input: #0f172a;
+  --color-admin-hover: #374151;
+  --color-admin-border: #374151;
+  --color-admin-border-strong: #4b5563;
+  --color-admin-ink: #ffffff;
+  --color-admin-ink-soft: #9ca3af;
+  --color-admin-ink-faint: #6b7280;
+
+  /* ======================================================================
+     4. RADIUS (Slightly refined for a sleek, luxury look)
+     ====================================================================== */
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 999px;
+
+  /* ======================================================================
+     5. FONTS — layout.tsx এর next/font ভ্যারিয়েবল থেকে আসে
+     ====================================================================== */
+  --font-body: var(--font-jakarta), -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-display: var(--font-body);
+  --font-script: var(--font-body);
+  --font-bengali: var(--font-hind), var(--font-body);
+
+  /* ======================================================================
+     6. ELEVATION — 3D depth scale (Soft & Premium Shadows)
+     ====================================================================== */
+  --shadow-flat: 0 1px 3px rgba(15, 23, 42, 0.08);
+  --shadow-raised: 0 4px 12px rgba(15, 23, 42, 0.08);
+  --shadow-float: 0 10px 25px rgba(15, 23, 42, 0.12);
+  --shadow-lifted: 0 20px 40px rgba(15, 23, 42, 0.16);
+  --shadow-brand: 0 8px 20px rgba(13, 110, 253, 0.25);
+  --shadow-gold: 0 8px 20px rgba(197, 160, 89, 0.25);
+
+  /* ---------- Motion ---------- */
+  --ease-out-soft: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* ==========================================================================
+   BASE
+   ========================================================================== */
+* {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-ink);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+h1, h2, h3, h4, .font-display {
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+}
+
+/* বাংলা টেক্সট সুন্দর দেখানোর জন্য */
+:lang(bn), .font-bn {
+  font-family: var(--font-bengali);
+}
+
+::selection {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-dark);
+}
+
+/* ---------- Scrollbar (site + dashboard) ---------- */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--color-border-strong);
+  border-radius: var(--radius-pill);
+  border: 3px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-faint);
+  background-clip: content-box;
+}
+
+/* ---------- Layout helper ---------- */
+.max-width {
+  max-width: 1420px;
+  margin-inline: auto;
+}
+
+/* ডিবাগ হেল্পার — লেআউট দেখতে চাইলে ক্লাস বসান */
+.borders { outline: 1px solid var(--color-chili) !important; }
+
+/* ==========================================================================
+   SITE COMPONENT PATTERNS  (`site-*` — ড্যাশবোর্ডের .btn/.bg-card এর সাথে
+   কখনো সংঘর্ষ করবে না)
+   ========================================================================== */
+.site-card {
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-flat);
+}
+
+/* ---------- Buttons ---------- */
+.site-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-family: var(--font-body);
+  font-weight: 700;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition:
+    background 0.18s var(--ease-out-soft),
+    box-shadow 0.18s var(--ease-out-soft),
+    transform 0.14s var(--ease-spring),
+    color 0.18s var(--ease-out-soft);
+}
+.site-btn:active { transform: translateY(1px) scale(0.985); }
+.site-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
+
+.site-btn-primary {
+  background: linear-gradient(180deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
+  color: var(--color-ink-invert);
+  box-shadow: var(--shadow-brand);
+}
+.site-btn-primary:hover:not(:disabled) {
+  background: linear-gradient(180deg, var(--color-brand-dark) 0%, var(--color-brand-darker) 100%);
+  transform: translateY(-2px);
+}
+
+.site-btn-secondary {
+  background: var(--color-brand-soft);
+  color: var(--color-brand-dark);
+}
+.site-btn-secondary:hover:not(:disabled) {
+  background: var(--color-brand);
+  color: var(--color-ink-invert);
+}
+
+.site-btn-outline {
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border-strong);
+  color: var(--color-ink);
+}
+.site-btn-outline:hover:not(:disabled) {
+  border-color: var(--color-brand);
+  color: var(--color-brand);
+  background: var(--color-brand-tint);
+}
+
+.site-btn-ghost { background: transparent; color: var(--color-ink-soft); }
+.site-btn-ghost:hover:not(:disabled) { background: var(--color-surface-soft); color: var(--color-ink); }
+
+/* ---------- Inputs ---------- */
+.site-input {
+  width: 100%;
+  background: var(--color-surface);
+  border: 1.5px solid var(--color-border);
+  color: var(--color-ink);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  transition: border-color 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+}
+.site-input::placeholder { color: var(--color-ink-faint); }
+.site-input:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow: 0 0 0 4px var(--color-brand-soft);
+}
+.site-input:disabled { background: var(--color-surface-soft); cursor: not-allowed; }
+.site-input.is-invalid { border-color: var(--color-chili); }
+.site-input.is-invalid:focus { box-shadow: 0 0 0 4px var(--color-chili-soft); }
+
+/* ---------- Badges ---------- */
+.site-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  border-radius: var(--radius-pill);
+  font-weight: 700;
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  padding: 3px 10px;
+  white-space: nowrap;
+}
+.site-badge-brand   { background: var(--color-brand-soft);   color: var(--color-brand-dark); }
+.site-badge-herb    { background: var(--color-herb-soft);    color: var(--color-herb-dark); }
+.site-badge-chili   { background: var(--color-chili-soft);   color: var(--color-chili-dark); }
+.site-badge-saffron { background: var(--color-saffron-soft); color: var(--color-saffron-dark); }
+.site-badge-muted   { background: var(--color-surface-soft); color: var(--color-ink-soft); }
+
+/* ---------- Section eyebrow ---------- */
+/* এক-ফন্ট নীতিতে eyebrow আর হাতের লেখা নয় — ছোট, বড় হাতের, ফাঁক দেওয়া লেবেল */
+.site-eyebrow {
+  display: inline-block;
+  font-family: var(--font-body);
+  font-size: 11.5px;
+  font-weight: 800;
+  line-height: 1;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--color-brand);
+}
+
+/* ==========================================================================
+   3D / DEPTH UTILITIES — checkout ফর্ম আর কার্ডে ব্যবহার হয়
+   ========================================================================== */
+
+/* পুরো 3D scene এর জন্য perspective — প্যারেন্টে বসান */
+.scene-3d { perspective: 1400px; perspective-origin: 50% 20%; }
+
+/* কার্ড হালকা কাত হয়ে ভাসবে, hover-এ সোজা হয়ে সামনে আসবে */
+.card-3d {
+  transform-style: preserve-3d;
+  transition: transform 0.5s var(--ease-out-soft), box-shadow 0.5s var(--ease-out-soft);
+  will-change: transform;
+}
+.card-3d-hover:hover {
+  transform: translateY(-6px) rotateX(4deg) rotateY(-4deg) scale(1.015);
+  box-shadow: var(--shadow-lifted);
+}
+
+/* গ্লাস প্যানেল — 3D ফর্মের বডি */
+.glass-panel {
+  background: linear-gradient(
+    145deg,
+    rgba(255, 255, 255, 0.92) 0%,
+    rgba(255, 255, 255, 0.72) 100%
+  );
+  backdrop-filter: blur(18px) saturate(160%);
+  -webkit-backdrop-filter: blur(18px) saturate(160%);
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  box-shadow:
+    var(--shadow-lifted),
+    inset 0 1px 0 rgba(255, 255, 255, 0.9);
+}
+
+/* এমবস করা ইনপুট — ভিতরের দিকে চাপা মনে হবে */
+.input-3d {
+  background: linear-gradient(180deg, #f4f4f8 0%, #ffffff 100%);
+  border: 1px solid var(--color-border);
+  box-shadow:
+    inset 0 2px 4px rgba(28, 28, 40, 0.06),
+    0 1px 0 rgba(255, 255, 255, 0.9);
+  transition: box-shadow 0.2s var(--ease-out-soft), border-color 0.2s ease, transform 0.2s ease;
+}
+.input-3d:focus {
+  outline: none;
+  border-color: var(--color-brand);
+  box-shadow:
+    inset 0 2px 6px rgba(215, 15, 100, 0.08),
+    0 0 0 4px var(--color-brand-soft);
+}
+.input-3d.is-invalid { border-color: var(--color-chili); }
+.input-3d.is-invalid:focus { box-shadow: inset 0 2px 6px rgba(226, 60, 52, 0.08), 0 0 0 4px var(--color-chili-soft); }
+
+/* উঁচু বাটন — চাপ দিলে দেবে যাবে */
+.btn-3d {
+  position: relative;
+  background: linear-gradient(180deg, var(--color-brand) 0%, var(--color-brand-dark) 100%);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  font-weight: 800;
+  box-shadow:
+    0 5px 0 var(--color-brand-darker),
+    var(--shadow-brand);
+  transition: transform 0.12s var(--ease-out-soft), box-shadow 0.12s var(--ease-out-soft);
+}
+.btn-3d:hover:not(:disabled) {
+  transform: translateY(-2px);
+  box-shadow: 0 7px 0 var(--color-brand-darker), var(--shadow-brand);
+}
+.btn-3d:active:not(:disabled) {
+  transform: translateY(4px);
+  box-shadow: 0 1px 0 var(--color-brand-darker);
+}
+.btn-3d:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  box-shadow: 0 5px 0 var(--color-brand-darker);
+}
+
+/* উষ্ণ গ্রেডিয়েন্ট আভা — 3D সেকশনের পেছনে */
+.aurora-brand {
+  background:
+    radial-gradient(60% 55% at 12% 8%, rgba(215, 15, 100, 0.16) 0%, transparent 60%),
+    radial-gradient(55% 50% at 88% 12%, rgba(245, 185, 61, 0.18) 0%, transparent 60%),
+    radial-gradient(70% 60% at 50% 100%, rgba(24, 155, 76, 0.1) 0%, transparent 60%),
+    var(--color-canvas);
+}
+
+/* ==========================================================================
+   ANIMATIONS
+   ========================================================================== */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: none; }
+}
+.rise-in { animation: rise-in 0.55s var(--ease-out-soft) both; }
+
+@keyframes pop-in {
+  0%   { opacity: 0; transform: scale(0.9); }
+  100% { opacity: 1; transform: scale(1); }
+}
+.pop-in { animation: pop-in 0.32s var(--ease-spring) both; }
+
+@keyframes slide-in-right {
+  from { transform: translateX(100%); }
+  to   { transform: none; }
+}
+.slide-in-right { animation: slide-in-right 0.32s var(--ease-out-soft) both; }
+
+@keyframes cart-bump {
+  0%, 100% { transform: scale(1); }
+  35%      { transform: scale(1.28); }
+  70%      { transform: scale(0.94); }
+}
+.cart-bump { animation: cart-bump 0.42s var(--ease-spring); }
+
+@keyframes shimmer {
+  100% { transform: translateX(100%); }
+}
+.skeleton {
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface-soft);
+}
+.skeleton::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.65), transparent);
+  animation: shimmer 1.4s infinite;
+}
+
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-10px); }
+}
+.float-y { animation: float-y 5s ease-in-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .card-3d-hover:hover { transform: none; }
+}
+
+/* ---------- Utility: hide scrollbar on horizontal chip rows ---------- */
+.no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ---------- Line clamp helpers used across cards ---------- */
+.clamp-1, .clamp-2, .clamp-3 {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+.clamp-1 { -webkit-line-clamp: 1; }
+.clamp-2 { -webkit-line-clamp: 2; }
+.clamp-3 { -webkit-line-clamp: 3; }
+
+/* ==========================================================================
+   HERO BANNER — হোম পেজের উপরের ব্যানার (ড্যাশবোর্ড থেকে ডাইনামিক)
+   --------------------------------------------------------------------------
+   বাঁয়ে লেখা, ডানে ছবি — ছবির বাঁ কিনারাটা বড় একটা বাঁকে কাটা, আর তার
+   ঠিক বাইরে একটা সরু অ্যাকসেন্ট রঙের রেখা।
+
+   রঙ তিনটে ভ্যারিয়েবল দিয়ে চলে, তাই প্রতিটা ব্যানার নিজের রঙ পাঠাতে
+   পারে; কিছু না পাঠালে রেস্টুরেন্টের থিমের রঙই ব্যবহার হয়:
+
+     --hero-bg      পেছনের রঙ
+     --hero-accent  বোতাম, রেখা, ছোট ছোট সাজ
+     --hero-ink     লেখার রঙ
+
+   মোবাইলে ছবিটা পুরো ব্যানারের ব্যাকগ্রাউন্ড হয়ে যায় (উপরে একটা পর্দা,
+   যাতে লেখা পড়া যায়), ডেস্কটপে ডান পাশের বাঁকা ব্লকে ফিরে আসে।
+   ========================================================================== */
+.hero-banner {
+  --hero-bg: var(--color-ink);
+  --hero-accent: var(--color-brand);
+  --hero-ink: var(--color-ink-invert);
+
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: var(--hero-bg);
+  color: var(--hero-ink);
+}
+
+/* ---------- ছবি ---------- */
+.hero-banner__media {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  overflow: hidden;
+}
+.hero-banner__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+/* মোবাইলে ছবির উপরে পর্দা — না দিলে সাদা লেখা হারিয়ে যায় */
+.hero-banner__veil {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--hero-bg) 88%, transparent) 0%,
+    color-mix(in srgb, var(--hero-bg) 66%, transparent) 45%,
+    color-mix(in srgb, var(--hero-bg) 92%, transparent) 100%
+  );
+}
+
+/* ছবির বাইরের সরু বাঁকা রেখা — শুধু বড় স্ক্রিনে */
+.hero-banner__arc,
+.hero-banner__ring,
+.hero-banner__dot {
+  display: none;
+}
+
+/* ---------- ডেস্কটপ: বাঁয়ে লেখা | ডানে বাঁকা ছবি ---------- */
+@media (min-width: 1024px) {
+  .hero-banner__media {
+    left: 45%;
+    border-top-left-radius: 38% 50%;
+    border-bottom-left-radius: 38% 50%;
+  }
+
+  .hero-banner__veil {
+    background: linear-gradient(
+      90deg,
+      color-mix(in srgb, var(--hero-bg) 65%, transparent) 0%,
+      transparent 38%
+    );
+  }
+
+  .hero-banner__arc {
+    display: block;
+    position: absolute;
+    z-index: 1;
+    top: -8%;
+    bottom: -8%;
+    left: calc(45% - 26px);
+    right: -90px;
+    border: 1px solid color-mix(in srgb, var(--hero-accent) 55%, transparent);
+    border-top-left-radius: 38% 50%;
+    border-bottom-left-radius: 38% 50%;
+    pointer-events: none;
+  }
+
+  /* নিচ-বাঁ কোণের সাজ — মোটা বলয় আর একটা ছোট বিন্দু */
+  .hero-banner__ring {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    left: -130px;
+    bottom: -130px;
+    width: 280px;
+    height: 280px;
+    border-radius: 50%;
+    border: 30px solid color-mix(in srgb, var(--hero-accent) 20%, transparent);
+    pointer-events: none;
+  }
+  .hero-banner__dot {
+    display: block;
+    position: absolute;
+    z-index: 0;
+    left: 104px;
+    bottom: 86px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: color-mix(in srgb, var(--hero-accent) 85%, transparent);
+    pointer-events: none;
+  }
+}
+
+/* ---------- লেখা ---------- */
+.hero-banner__content {
+  position: relative;
+  z-index: 2;
+}
+
+.hero-banner__cta {
+  background: var(--hero-accent);
+  color: var(--hero-ink);
+  border-radius: var(--radius-xs);
+  letter-spacing: 0.12em;
+  box-shadow: 0 10px 24px color-mix(in srgb, var(--hero-accent) 35%, transparent);
+  transition:
+    transform 0.18s var(--ease-out-soft),
+    filter 0.18s var(--ease-out-soft);
+}
+.hero-banner__cta:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.08);
+}
+.hero-banner__cta:active {
+  transform: translateY(0);
+}
+
+/* ---------- স্লাইডার ---------- */
+.hero-swiper .swiper-pagination {
+  bottom: 18px !important;
+}
+.hero-swiper .swiper-pagination-bullet {
+  width: 22px;
+  height: 3px;
+  border-radius: var(--radius-pill);
+  background: var(--color-ink-invert);
+  opacity: 0.35;
+  transition: opacity 0.2s ease, width 0.2s ease;
+}
+.hero-swiper .swiper-pagination-bullet-active {
+  width: 38px;
+  opacity: 1;
+  /* প্রথম ব্যানারের অ্যাকসেন্ট রঙটাই স্লাইডারের গায়ে বসানো থাকে */
+  background: var(--hero-accent, var(--color-brand));
+}
