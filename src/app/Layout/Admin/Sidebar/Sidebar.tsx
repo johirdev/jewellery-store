@@ -126,12 +126,12 @@ const navItems: NavItem[] = [
         icon: Icons.Category,
       },
       {
-        label: "Add food item",
-        href: "/dashboard/menu/food-create",
+        label: "Add jewellery",
+        href: "/dashboard/menu/jewellery-create",
         icon: Icons.Review,
       },
       {
-        label: "All food",
+        label: "All jewellery",
         href: "/dashboard/menu/all-items",
         icon: Icons.Boxes,
       },

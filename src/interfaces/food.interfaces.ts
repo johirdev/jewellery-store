@@ -2,7 +2,7 @@
 import { Document, Types } from "mongoose";
 
 export type DiscountType = "none" | "percentage" | "flat";
-export type SpiceLevel = "" | "Mild" | "Medium" | "Hot";
+export type JewelleryGender = "" | "Women" | "Men" | "Unisex" | "Kids";
 export type Status = "active" | "inactive";
 
 export interface IVariationImage {
@@ -21,10 +21,15 @@ export interface IFoodVariation {
   preparationTime?: number;
   discountType?: DiscountType;
   discountValue?: number;
-  quantityLabel?: string;
-  isOpen?: boolean;
-  kitchen_chef?: string;
-  spice_level?: SpiceLevel;
+  metalType?: string;
+  metalPurity?: string;
+  gemstoneType?: string;
+  gemstoneColor?: string;
+  size?: string;
+  weight?: number;
+  gender?: JewelleryGender;
+  material?: string;
+  isAvailable?: boolean;
   stock_quantity?: number;
   is_default?: boolean;
   sort_order?: number;
@@ -36,6 +41,10 @@ export interface IFood {
   category_id?: string;
   category_name?: string;
   description?: string;
+  brand?: string;
+  collection?: string;
+  careInstructions?: string;
+  warranty?: string;
   view?: number;
   total_review?: number;
   review_rating?: number;

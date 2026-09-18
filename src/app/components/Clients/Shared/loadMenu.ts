@@ -2,7 +2,7 @@ import { connectDB } from "@/src/config/db";
 import { FoodService } from "@/src/services/food.service";
 import { CategoryService } from "@/src/services/category.service";
 import type { FoodItem } from "../FoodItems/FoodCard";
-import type { Category } from "../FoodCategory/FoodCategory";
+import type { Category } from "../FoodCategory/ItemsCategory";
 
 /* ==========================================================================
    মেনুর ডেটা সার্ভারেই তুলে আনা — "data first"

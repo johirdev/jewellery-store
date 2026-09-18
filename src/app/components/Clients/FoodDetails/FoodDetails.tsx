@@ -1,10 +1,10 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 
-// src/app/(site)/foods/[id]/FoodDetails.tsx
+// src/app/(site)/jewellery/[id]/FoodDetails.tsx
 "use client";
 
 /**
- * FoodDetails — একটা খাবারের বিস্তারিত পেজ
+ * JewelleryDetails — একটি jewellery item-এর বিস্তারিত পেজ
  * --------------------------------------------------------------------------
  * লেআউটটা ফরমাল: বাঁ পাশে ছবির কার্ড (ডেস্কটপে sticky), ডান পাশে সব লেখা
  * উপর-নিচে সাজানো — শিরোনাম → অর্ডার কার্ড → বিবরণ → এক নজরে → শেফের নোট।
@@ -28,9 +28,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowLeft,
   ChevronRight,
-  Flame,
-  Clock,
-  ChefHat,
+  Gem,
   Minus,
   Plus,
   ShoppingCart,
@@ -50,7 +48,7 @@ import {
   Food,
   FoodVariation,
   FoodApiResponse,
-} from "@/src/app/(site)/foods/[id]/FoodDetails.types";
+} from "@/src/app/(site)/jewellery/[id]/FoodDetails.types";
 import toast from "react-hot-toast";
 import { useCartStore } from "@/src/store/cart.store";
 import { formatMoney } from "@/src/config/business";
@@ -58,18 +56,6 @@ import FoodsSlider from "../FoodsSlider/FoodsSlider";
 import ReviewSection, { type ReviewStats } from "./ReviewSection";
 
 import "./foodDetails.css";
-
-const SPICE_LEVELS: Record<string, number> = {
-  mild: 1,
-  medium: 2,
-  hot: 3,
-  "extra hot": 4,
-};
-
-const getSpiceCount = (level?: string) => {
-  if (!level) return 0;
-  return SPICE_LEVELS[level.toLowerCase()] ?? 1;
-};
 
 const formatRelativeTime = (dateStr: string) => {
   const date = new Date(dateStr);
@@ -136,7 +122,7 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
     (async () => {
       try {
         setLoading(true);
-        const res = await fetch(`/api/v1/foods/${id}`);
+        const res = await fetch(`/api/v1/jewellery/${id}`);
         const json: FoodApiResponse = await res.json();
         if (cancelled) return;
 
@@ -166,7 +152,7 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
     if (!food || viewCounted.current) return;
     viewCounted.current = true;
 
-    const key = `food-view:${id}`;
+    const key = `jewellery-view:${id}`;
     try {
       const last = Number(window.sessionStorage.getItem(key) || 0);
       if (last && Date.now() - last < VIEW_COOLDOWN_MS) return;
@@ -175,7 +161,7 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
       // প্রাইভেট মোডে sessionStorage বন্ধ থাকতে পারে — তখন গুনেই ফেলি
     }
 
-    fetch(`/api/v1/foods/${id}/view`, { method: "POST" })
+    fetch(`/api/v1/jewellery/${id}/view`, { method: "POST" })
       .then((res) => res.json())
       .then((json) => {
         if (typeof json?.data?.view === "number") setLiveView(json.data.view);
@@ -215,7 +201,7 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
   const inStock =
     !!activeVariation &&
     activeVariation.status !== "inactive" &&
-    activeVariation.isOpen !== false &&
+    activeVariation.isAvailable !== false &&
     stockLeft > 0;
   const lowStock = inStock && tracksStock && stockLeft <= 3;
 
@@ -226,11 +212,16 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
     activeVariation && activeVariation.regularPrice > 0
       ? Math.round((savings / activeVariation.regularPrice) * 100)
       : 0;
+  const discountLabel =
+    activeVariation?.discountType === "percentage"
+      ? `${activeVariation.discountValue ?? discountPercent}%`
+      : activeVariation?.discountType === "flat"
+        ? formatMoney(activeVariation.discountValue ?? savings)
+        : discountPercent > 0
+          ? `${discountPercent}%`
+          : "None";
 
   const total = activeVariation ? activeVariation.salePrice * quantity : 0;
-  const spiceCount = getSpiceCount(activeVariation?.spice_level);
-  const isSpicy = spiceCount >= 2;
-
   // রিভিউ সেকশন যা বলছে সেটাই সত্য — না এলে সার্ভার-রেন্ডার করা সংখ্যাই থাক
   const reviewCount = reviewStats?.total ?? food?.total_review ?? 0;
   const ratingValue = reviewStats?.average ?? food?.review_rating ?? 0;
@@ -253,7 +244,6 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
       image: activeVariation.images?.[0]?.url || food.image,
       regular_price: activeVariation.regularPrice,
       unit_price: activeVariation.salePrice ?? activeVariation.regularPrice,
-      spice_level: activeVariation.spice_level,
       max_quantity: tracksStock ? stockLeft : undefined,
       quantity,
     });
@@ -288,16 +278,16 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
       <div className="fd">
         <div className="fd-404">
           <PackageX strokeWidth={1.5} aria-hidden="true" />
-          <h1>This item isn&apos;t on the menu</h1>
+          <h1>This jewellery item isn&apos;t available</h1>
           <p>
             It may have been removed, or the link is incorrect. Head back to the
             menu to keep browsing.
           </p>
           <Link
-            href="/foods"
+            href="/jewellery"
             className="site-btn site-btn-primary mt-2 h-12 px-7 text-[12.5px] uppercase tracking-wide"
           >
-            Back to menu
+            Back to jewellery
           </Link>
         </div>
       </div>
@@ -361,11 +351,6 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
                 {discountPercent > 0 && inStock && (
                   <span className="fd-badge fd-badge--off">
                     <TicketPercent size={12} />-{discountPercent}%
-                  </span>
-                )}
-                {isSpicy && (
-                  <span className="fd-badge fd-badge--spicy">
-                    <Flame size={12} /> Spicy
                   </span>
                 )}
               </div>
@@ -442,33 +427,24 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
 
             {/* তথ্য-চিপ */}
             <div className="fd-chips">
-              {activeVariation.preparationTime ? (
+              {activeVariation.metalType ? (
                 <span className="fd-chip">
-                  <Clock aria-hidden="true" />
-                  {activeVariation.preparationTime} min
+                  <Gem aria-hidden="true" />
+                  {activeVariation.metalType}
                 </span>
               ) : null}
 
-              {activeVariation.kitchen_chef && (
+              {activeVariation.metalPurity && (
                 <span className="fd-chip">
-                  <ChefHat aria-hidden="true" />
-                  {activeVariation.kitchen_chef}
+                  <ShieldCheck aria-hidden="true" />
+                  {activeVariation.metalPurity}
                 </span>
               )}
 
-              {spiceCount > 0 && (
-                <span className="fd-chip fd-chip--spice">
-                  {Array.from({ length: 4 }).map((_, i) => (
-                    <Flame
-                      key={i}
-                      className={i < spiceCount ? undefined : "is-off"}
-                      fill={i < spiceCount ? "currentColor" : "none"}
-                      aria-hidden="true"
-                    />
-                  ))}
-                  <span className="ml-1 capitalize">
-                    {activeVariation.spice_level}
-                  </span>
+              {activeVariation.gemstoneType && (
+                <span className="fd-chip">
+                  <Gem aria-hidden="true" />
+                  {activeVariation.gemstoneType}
                 </span>
               )}
 
@@ -557,8 +533,8 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
             <section className="fd-panel">
               <h2 className="fd-panel__title">Description</h2>
               <p className="whitespace-pre-line">
-                {food.description ||
-                  `${food.name} is prepared fresh to order in the ${food.category_name} section of our kitchen, using quality ingredients and traditional techniques for a consistently great taste every time.`}
+                  {food.description ||
+                  `${food.name} is crafted with carefully selected materials and finished for lasting everyday elegance.`}
               </p>
             </section>
 
@@ -566,22 +542,23 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
             <section className="fd-panel">
               <h2 className="fd-panel__title">At a glance</h2>
               <dl className="fd-specs">
+                <Spec label="Item status" value={food.status === "active" ? "Active" : "Inactive"} />
+                <Spec label="Design status" value={activeVariation.status === "active" ? "Active" : "Inactive"} />
+                <Spec label="Metal" value={activeVariation.metalType || "—"} />
+                <Spec label="Purity" value={activeVariation.metalPurity || "—"} />
+                <Spec label="Gemstone" value={activeVariation.gemstoneType || "—"} />
+                <Spec label="Stone color" value={activeVariation.gemstoneColor || "—"} />
+                <Spec label="Size" value={activeVariation.size || "—"} />
                 <Spec
-                  label="Serving"
-                  value={activeVariation.quantityLabel || "1 plate"}
+                  label="Weight"
+                  value={activeVariation.weight !== undefined ? `${activeVariation.weight} g` : "—"}
                 />
-                <Spec
-                  label="Prep time"
-                  value={
-                    activeVariation.preparationTime
-                      ? `${activeVariation.preparationTime} min`
-                      : "—"
-                  }
-                />
-                <Spec
-                  label="Spice level"
-                  value={activeVariation.spice_level || "Regular"}
-                />
+                <Spec label="Material" value={activeVariation.material || "—"} />
+                <Spec label="For" value={activeVariation.gender || "Unisex"} />
+                <Spec label="Stock" value={activeVariation.stock_quantity !== undefined ? String(activeVariation.stock_quantity) : "Unlimited"} />
+                <Spec label="Available for sale" value={activeVariation.isAvailable === false ? "No" : "Yes"} />
+                <Spec label="Default design" value={activeVariation.is_default ? "Yes" : "No"} />
+                <Spec label="Display order" value={String(activeVariation.sort_order ?? 0)} />
                 <Spec
                   label="Availability"
                   value={inStock ? "In stock" : "Out of stock"}
@@ -589,21 +566,31 @@ const FoodDetails = ({ id, initialFood }: FoodDetailsProps) => {
               </dl>
             </section>
 
-            {/* ---------------- শেফের নোট ---------------- */}
             <section className="fd-panel">
-              <h2 className="fd-panel__title">Chef&apos;s note</h2>
-              <div className="fd-chef">
-                <span className="fd-chef__avatar">
-                  <ChefHat aria-hidden="true" />
-                </span>
-                <div>
-                  <b>{activeVariation.kitchen_chef || "Our head chef"}</b>
-                  <p>
-                    Handles the {food.category_name.toLowerCase()} station in
-                    our kitchen.
-                  </p>
-                </div>
-              </div>
+              <h2 className="fd-panel__title">Pricing and identification</h2>
+              <dl className="fd-specs">
+                <Spec label="Design name" value={activeVariation.name || "—"} />
+                <Spec label="SKU" value={activeVariation.sku || "—"} />
+                <Spec label="Barcode" value={activeVariation.barcode || "—"} />
+                <Spec label="Regular price" value={formatMoney(activeVariation.regularPrice)} />
+                <Spec label="Sale price" value={formatMoney(activeVariation.salePrice)} />
+                <Spec label="Discount type" value={activeVariation.discountType || "none"} />
+                <Spec label="Discount" value={discountLabel} />
+              </dl>
+            </section>
+
+            <section className="fd-panel">
+              <h2 className="fd-panel__title">Product information</h2>
+              <dl className="fd-specs">
+                <Spec label="Brand" value={food.brand || "—"} />
+                <Spec label="Collection" value={food.collection || "—"} />
+                <Spec label="Warranty" value={food.warranty || "—"} />
+                <Spec label="Care" value={food.careInstructions || "—"} />
+                <Spec label="Branch" value={food.branch_name || "—"} />
+                <Spec label="Category" value={food.category_name || "—"} />
+                <Spec label="Published" value={formatRelativeTime(food.createdAt)} />
+                <Spec label="Last updated" value={formatRelativeTime(food.updatedAt)} />
+              </dl>
             </section>
           </div>
         </div>

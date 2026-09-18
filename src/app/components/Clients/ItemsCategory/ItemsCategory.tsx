@@ -75,7 +75,7 @@ function CategoryImage({ src, alt }: { src?: string; alt: string }) {
   );
 }
 
-const FoodCategory = ({
+const ItemsCategory = ({
   onSelect,
   activeSlug,
   autoPlayInterval = AUTO_PLAY_DEFAULT,
@@ -431,4 +431,4 @@ const FoodCategory = ({
   );
 };
 
-export default FoodCategory;
+export default ItemsCategory;

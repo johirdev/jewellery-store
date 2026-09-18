@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * FoodCard — one menu item card + its quick-view modal
+ * JewelleryCard — one jewellery item card + its quick-view modal
  * --------------------------------------------------------------------------
  * A flat bordered card in the same language as the food details page: no
  * tilt, no glow, no shine sweeping over the photo. Hover only moves the
@@ -15,7 +15,7 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "react-hot-toast";
-import { Eye, Minus, Plus, ShoppingBag, Star, X, Flame } from "lucide-react";
+import { Eye, Gem, Minus, Plus, ShoppingBag, Star, X } from "lucide-react";
 import { useCartStore } from "@/src/store/cart.store";
 import { formatMoney } from "@/src/config/business";
 
@@ -36,8 +36,15 @@ interface VariationApi {
   discountType?: "none" | "percentage" | "flat";
   discountValue?: number;
   is_default?: boolean;
-  quantityLabel?: string;
-  spice_level?: string;
+  metalType?: string;
+  metalPurity?: string;
+  gemstoneType?: string;
+  gemstoneColor?: string;
+  size?: string;
+  weight?: number;
+  gender?: string;
+  material?: string;
+  isAvailable?: boolean;
   status?: string;
   stock_quantity?: number;
   images?: VariationImage[];
@@ -128,8 +135,8 @@ const FoodMeta = ({
 );
 
 /* ==========================================================================
-   FOOD CARD
-   ========================================================================== */
+  JEWELLERY CARD
+  ========================================================================== */
 const FoodCard = ({ food }: FoodCardProps) => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedVariationId, setSelectedVariationId] = useState("");
@@ -175,6 +182,8 @@ const FoodCard = ({ food }: FoodCardProps) => {
   const totalReview = food.total_review ?? 0;
   const hasDescription = !!food.description?.trim();
   const isSoldOut =
+    defaultVariation?.isAvailable === false ||
+    defaultVariation?.status === "inactive" ||
     typeof defaultVariation?.stock_quantity === "number" &&
     defaultVariation.stock_quantity <= 0;
 
@@ -195,7 +204,6 @@ const FoodCard = ({ food }: FoodCardProps) => {
       image: variation.images?.[0]?.url || food.image,
       regular_price: variation.regularPrice,
       unit_price: variation.salePrice ?? variation.regularPrice,
-      spice_level: variation.spice_level,
       max_quantity: variation.stock_quantity,
       quantity,
     });
@@ -248,9 +256,9 @@ const FoodCard = ({ food }: FoodCardProps) => {
                 -{cardDiscount}% OFF
               </span>
             )}
-            {defaultVariation.spice_level === "Hot" && (
+            {defaultVariation.gemstoneType && (
               <span className="food3d__badge food3d__badge--spicy">
-                <Flame size={11} /> Spicy
+                <Gem size={11} /> {defaultVariation.gemstoneType}
               </span>
             )}
           </div>
@@ -279,6 +287,12 @@ const FoodCard = ({ food }: FoodCardProps) => {
 
           <FoodMeta rating={rating} totalReview={totalReview} />
 
+          <div className="flex flex-wrap gap-x-3 gap-y-1 text-[11px] text-ink-faint">
+            {defaultVariation.metalPurity && <span>{defaultVariation.metalPurity}</span>}
+            {defaultVariation.metalType && <span>{defaultVariation.metalType}</span>}
+            {defaultVariation.weight !== undefined && <span>{defaultVariation.weight}g</span>}
+          </div>
+
           {hasDescription && (
             <p className="food3d__desc clamp-2">{food.description}</p>
           )}
@@ -294,10 +308,8 @@ const FoodCard = ({ food }: FoodCardProps) => {
               <span className="food3d__price">
                 {formatMoney(defaultVariation.salePrice)}
               </span>
-              {defaultVariation.quantityLabel && (
-                <span className="food3d__unit">
-                  / {defaultVariation.quantityLabel}
-                </span>
+              {defaultVariation.size && (
+                <span className="food3d__unit"> · Size {defaultVariation.size}</span>
               )}
             </div>
 
@@ -380,9 +392,9 @@ const FoodCard = ({ food }: FoodCardProps) => {
                     {formatMoney(activeVariation.regularPrice)}
                   </span>
                 )}
-                {activeVariation.quantityLabel && (
+                {activeVariation.size && (
                   <span className="text-[12px] text-ink-faint">
-                    / {activeVariation.quantityLabel}
+                    · Size {activeVariation.size}
                   </span>
                 )}
               </p>
@@ -395,11 +407,11 @@ const FoodCard = ({ food }: FoodCardProps) => {
 
               <hr className="border-border" />
 
-              {/* সাইজ / ভ্যারিয়েশন */}
+              {/* ডিজাইন / ভ্যারিয়েশন */}
               {food.variations.length > 1 && (
                 <div className="flex flex-col gap-2.5">
-                  <span className="text-[11px] font-bold uppercase tracking-[0.1em] text-ink">
-                    Choose size
+                  <span className="text-[11px] font-bold uppercase tracking-widest text-ink">
+                    Choose design
                   </span>
                   <div className="qv-sizes">
                     {food.variations.map((v) => {
@@ -420,11 +432,14 @@ const FoodCard = ({ food }: FoodCardProps) => {
                 </div>
               )}
 
-              {activeVariation.spice_level && (
-                <span className="site-badge site-badge-saffron w-fit">
-                  <Flame size={11} /> {activeVariation.spice_level}
-                </span>
-              )}
+              <div className="grid grid-cols-2 gap-2 text-[12px] text-ink-soft">
+                {activeVariation.metalType && <span>Metal: {activeVariation.metalType}</span>}
+                {activeVariation.metalPurity && <span>Purity: {activeVariation.metalPurity}</span>}
+                {activeVariation.gemstoneType && <span>Stone: {activeVariation.gemstoneType}</span>}
+                {activeVariation.size && <span>Size: {activeVariation.size}</span>}
+                {activeVariation.weight !== undefined && <span>Weight: {activeVariation.weight}g</span>}
+                {activeVariation.gender && <span>For: {activeVariation.gender}</span>}
+              </div>
 
               {/* কোয়ান্টিটি + কার্ট */}
               <div className="mt-1 flex flex-col gap-3 sm:flex-row sm:items-center">

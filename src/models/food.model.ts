@@ -33,22 +33,25 @@ const variationSchema = new Schema(
       required: true,
     },
 
-    preparationTime: { type: Number, min: 0 },
     discountType: {
       type: String,
       enum: ["none", "percentage", "flat"],
       default: "none",
     },
     discountValue: { type: Number, default: 0, min: 0 },
-    quantityLabel: { type: String, trim: true, default: "" },
-
-    isOpen: { type: Boolean, default: true },
-    kitchen_chef: { type: String, trim: true, default: "" },
-    spice_level: {
+    metalType: { type: String, trim: true, default: "" },
+    metalPurity: { type: String, trim: true, default: "" },
+    gemstoneType: { type: String, trim: true, default: "" },
+    gemstoneColor: { type: String, trim: true, default: "" },
+    size: { type: String, trim: true, default: "" },
+    weight: { type: Number, min: 0 },
+    gender: {
       type: String,
-      enum: ["", "Mild", "Medium", "Hot"],
-      default: "",
+      enum: ["", "Women", "Men", "Unisex", "Kids"],
+      default: "Unisex",
     },
+    material: { type: String, trim: true, default: "" },
+    isAvailable: { type: Boolean, default: true },
     stock_quantity: { type: Number, min: 0 },
     is_default: { type: Boolean, default: false },
     sort_order: { type: Number, default: 0 },

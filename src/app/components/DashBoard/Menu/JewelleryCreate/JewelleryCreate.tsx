@@ -1,4 +1,4 @@
-// src/app/dashboard/food/FoodManager.tsx
+// Jewellery item create and management page.
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
@@ -43,7 +43,7 @@ interface FoodItem {
   createdAt?: string;
 }
 
-export const FoodCreate = () => {
+export const JewelleryCreate = () => {
   const { token } = useContext(AuthContext);
   const headers = { Authorization: `Bearer ${token}` };
 
@@ -83,7 +83,7 @@ export const FoodCreate = () => {
   // ---------------- fetch ----------------
   const fetchFoods = async () => {
     try {
-      const res = await axios.get(`/api/v1/foods`, { headers });
+      const res = await axios.get(`/api/v1/jewellery`, { headers });
       setFoods(res.data.data || []);
     } catch {
       toast.error("Failed to load food items");
@@ -260,12 +260,16 @@ export const FoodCreate = () => {
     discountType: v.discountType,
     discountValue: v.discountValue ? Number(v.discountValue) : 0,
     salePrice: v.salePrice ? Number(v.salePrice) : undefined,
-    preparationTime: v.preparationTime ? Number(v.preparationTime) : undefined,
-    quantityLabel: v.quantityLabel || undefined,
-    kitchen_chef: v.kitchen_chef || undefined,
-    spice_level: v.spice_level || undefined,
+    metalType: v.metalType || undefined,
+    metalPurity: v.metalPurity || undefined,
+    gemstoneType: v.gemstoneType || undefined,
+    gemstoneColor: v.gemstoneColor || undefined,
+    size: v.size || undefined,
+    weight: v.weight ? Number(v.weight) : undefined,
+    gender: v.gender || undefined,
+    material: v.material || undefined,
+    isAvailable: v.isAvailable,
     stock_quantity: v.stock_quantity ? Number(v.stock_quantity) : undefined,
-    isOpen: v.isOpen,
     is_default: v.is_default,
     sort_order: Number(v.sort_order) || 0,
     status: v.status,
@@ -285,7 +289,7 @@ export const FoodCreate = () => {
           variations.map(buildVariationPayload),
         );
         const res = await axios.post(
-          `/api/v1/foods`,
+          `/api/v1/jewellery`,
           {
             name: foodName,
             category_id: categoryId || undefined,
@@ -301,7 +305,7 @@ export const FoodCreate = () => {
           { headers },
         );
         if (res.data.success) {
-          toast.success(`"${foodName}" created!`);
+          toast.success(`"${foodName}" jewellery item created!`);
           resetForm();
           setFormOpen(false);
           fetchFoods();
@@ -310,7 +314,7 @@ export const FoodCreate = () => {
         }
       } else if (editingFoodId) {
         await axios.patch(
-          `/api/v1/foods/${editingFoodId}`,
+          `/api/v1/jewellery/${editingFoodId}`,
           {
             name: foodName,
             category_id: categoryId || undefined,
@@ -324,7 +328,7 @@ export const FoodCreate = () => {
 
         for (const vid of removedVariationIds) {
           await axios.delete(
-            `/api/v1/foods/${editingFoodId}/variations/${vid}`,
+            `/api/v1/jewellery/${editingFoodId}/variations/${vid}`,
             { headers },
           );
         }
@@ -333,26 +337,26 @@ export const FoodCreate = () => {
           const payload = await buildVariationPayload(v);
           if (v._id) {
             await axios.patch(
-              `/api/v1/foods/${editingFoodId}/variations/${v._id}`,
+              `/api/v1/jewellery/${editingFoodId}/variations/${v._id}`,
               payload,
               { headers },
             );
           } else {
             await axios.post(
-              `/api/v1/foods/${editingFoodId}/variations`,
+              `/api/v1/jewellery/${editingFoodId}/variations`,
               payload,
               { headers },
             );
           }
         }
 
-        toast.success("Food item updated!");
+        toast.success("Jewellery item updated!");
         resetForm();
         setFormOpen(false);
         fetchFoods();
       }
     } catch (err: any) {
-      toast.error(err?.response?.data?.message || "Failed to save food item");
+      toast.error(err?.response?.data?.message || "Failed to save jewellery item");
     } finally {
       setSubmitting(false);
     }
@@ -374,15 +378,15 @@ export const FoodCreate = () => {
     <div className="admin-panel bg-app text-primary min-h-screen p-4 md:p-6">
       {modalOpen && (
         <DeleteModal
-          deleteUrl={`/api/v1/foods/${deleteId}`}
-          title="Food Item"
+          deleteUrl={`/api/v1/jewellery/${deleteId}`}
+          title="Jewellery Item"
           onDeleted={handleDeleted}
           closeModal={closeDeleteModal}
         />
       )}
 
       <div className="flex items-center justify-between mb-4 lg:hidden">
-        <h1 className="text-lg font-semibold text-primary">Food Items</h1>
+        <h1 className="text-lg font-semibold text-primary">Jewellery Items</h1>
         <button
           type="button"
           onClick={() => {
@@ -391,7 +395,7 @@ export const FoodCreate = () => {
           }}
           className="btn btn-primary px-4 py-2 text-sm"
         >
-          {formOpen ? "Close" : "+ New Food Item"}
+          {formOpen ? "Close" : "+ New Jewellery Item"}
         </button>
       </div>
 
@@ -418,10 +422,10 @@ export const FoodCreate = () => {
             </div>
             <div className="flex-1">
               <h2 className="text-[16px] font-medium text-primary">
-                {mode === "create" ? "Add Food Item" : "Edit Food Item"}
+                {mode === "create" ? "Add Jewellery Item" : "Edit Jewellery Item"}
               </h2>
               <p className="text-[13px] text-secondary mt-0.5">
-                Food name, প্রতি variation-এ নাম, দাম ও ১টি ছবি লাগবে।
+                Jewellery name, design details, price and at least 1 image are required.
               </p>
             </div>
           </div>
@@ -430,13 +434,13 @@ export const FoodCreate = () => {
             {/* Food Name */}
             <div className="space-y-1.5">
               <label className="text-[13px] font-medium text-primary">
-                Food Name <span className="text-danger">*</span>
+                Jewellery Name <span className="text-danger">*</span>
               </label>
               <input
                 type="text"
                 value={foodName}
                 onChange={(e) => setFoodName(e.target.value)}
-                placeholder="Kacchi Biryani"
+                placeholder="Jewellery Title / Name"
                 className={`input-field w-full h-10 px-3 text-[14px] ${errors.foodName ? "input-error" : ""}`}
               />
               {errors.foodName && (
@@ -511,7 +515,7 @@ export const FoodCreate = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className=" grid-cols-1 sm:grid-cols-2 gap-3 hidden">
               <div className="space-y-1.5">
                 <label className="text-[13px] font-medium text-primary">
                   Branch <span className="text-muted">(optional)</span>
@@ -608,13 +612,13 @@ export const FoodCreate = () => {
                   ? "Creating..."
                   : "Updating..."
                 : mode === "create"
-                  ? "Create Food Item"
-                  : "Update Food Item"}
+                  ? "Create Jewellery Item"
+                  : "Update Jewellery Item"}
             </button>
           </div>
         </div>
 
-        {/* ============== RIGHT: FOOD GRID ============== */}
+        {/* ============== RIGHT: JEWELLERY GRID ============== */}
         <div className="bg-card border-default rounded-xl overflow-hidden">
           {/* Search bar */}
           <div className="p-4 border-default-b">
@@ -659,7 +663,7 @@ export const FoodCreate = () => {
             <p className="p-6 text-secondary text-sm">Loading...</p>
           ) : foods.length === 0 ? (
             <p className="px-4 py-8 text-center text-secondary text-sm">
-              No food items yet.
+              No jewellery items yet.
             </p>
           ) : filteredFoods.length === 0 ? (
             <p className="px-4 py-8 text-center text-secondary text-sm">
@@ -762,4 +766,4 @@ export const FoodCreate = () => {
   );
 };
 
-export default FoodCreate;
+export default JewelleryCreate;

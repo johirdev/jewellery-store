@@ -2,7 +2,7 @@
 // src/app/Layout/foodVariationUtils.ts
 
 export type DiscountType = "none" | "percentage" | "flat";
-export type SpiceLevel = "" | "Mild" | "Medium" | "Hot";
+export type JewelleryGender = "" | "Women" | "Men" | "Unisex" | "Kids";
 export type Status = "active" | "inactive";
 
 const ean13CheckDigit = (d: string) => {
@@ -68,12 +68,16 @@ export interface VariationValue {
   salePriceTouched: boolean;
   sku: string;
   barcode: string;
-  preparationTime: string;
-  quantityLabel: string;
-  kitchen_chef: string;
-  spice_level: SpiceLevel;
+  metalType: string;
+  metalPurity: string;
+  gemstoneType: string;
+  gemstoneColor: string;
+  size: string;
+  weight: string;
+  gender: JewelleryGender;
+  material: string;
+  isAvailable: boolean;
   stock_quantity: string;
-  isOpen: boolean;
   is_default: boolean;
   sort_order: string;
   status: Status;
@@ -91,12 +95,16 @@ export const emptyVariation = (isFirst = false): VariationValue => ({
   salePriceTouched: false,
   sku: "",
   barcode: generateBarcode(),
-  preparationTime: "",
-  quantityLabel: "",
-  kitchen_chef: "",
-  spice_level: "",
+  metalType: "",
+  metalPurity: "",
+  gemstoneType: "",
+  gemstoneColor: "",
+  size: "",
+  weight: "",
+  gender: "Unisex",
+  material: "",
+  isAvailable: true,
   stock_quantity: "",
-  isOpen: true,
   is_default: isFirst,
   sort_order: "0",
   status: "active",
@@ -115,14 +123,17 @@ export const variationFromApi = (v: any): VariationValue => ({
   salePriceTouched: true,
   sku: v.sku || "",
   barcode: v.barcode || generateBarcode(),
-  preparationTime:
-    v.preparationTime !== undefined ? String(v.preparationTime) : "",
-  quantityLabel: v.quantityLabel || "",
-  kitchen_chef: v.kitchen_chef || "",
-  spice_level: v.spice_level || "",
+  metalType: v.metalType || "",
+  metalPurity: v.metalPurity || "",
+  gemstoneType: v.gemstoneType || "",
+  gemstoneColor: v.gemstoneColor || "",
+  size: v.size || "",
+  weight: v.weight !== undefined ? String(v.weight) : "",
+  gender: v.gender || "Unisex",
+  material: v.material || "",
+  isAvailable: v.isAvailable ?? true,
   stock_quantity:
     v.stock_quantity !== undefined ? String(v.stock_quantity) : "",
-  isOpen: v.isOpen ?? true,
   is_default: v.is_default ?? false,
   sort_order: String(v.sort_order ?? 0),
   status: v.status || "active",

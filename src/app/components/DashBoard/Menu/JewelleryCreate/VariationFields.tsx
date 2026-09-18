@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import {
   VariationValue,
   DiscountType,
-  SpiceLevel,
+  JewelleryGender,
   calcSalePrice,
   generateBarcode,
   generateSku,
@@ -138,7 +138,7 @@ export const VariationFields = ({
             type="text"
             value={v.name}
             onChange={(e) => handleNameChange(e.target.value)}
-            placeholder="Half / Full / Regular"
+            placeholder="18K Gold / Silver / Rose Gold"
             className={`input-field w-full h-10 px-3 text-[14px] ${errors.name ? "input-error" : ""}`}
           />
           {errors.name && (
@@ -155,7 +155,7 @@ export const VariationFields = ({
             onChange={(e) =>
               handlePricingChange({ regularPrice: e.target.value })
             }
-            placeholder="160"
+            placeholder="25000"
             className={`input-field w-full h-10 px-3 text-[14px] ${errors.regularPrice ? "input-error" : ""}`}
           />
           {errors.regularPrice && (
@@ -261,13 +261,49 @@ export const VariationFields = ({
         </div>
         <div className="space-y-1.5">
           <label className="text-[13px] font-medium text-primary">
-            Prep Time (min) <span className="text-muted">(optional)</span>
+            Metal Type <span className="text-muted">(optional)</span>
           </label>
           <input
-            type="number"
-            value={v.preparationTime}
-            onChange={(e) => onChange({ preparationTime: e.target.value })}
-            placeholder="20"
+            type="text"
+            value={v.metalType}
+            onChange={(e) => onChange({ metalType: e.target.value })}
+            placeholder="Gold, Silver, Platinum"
+            className="input-field w-full h-10 px-3 text-[13px]"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-medium text-primary">
+            Purity <span className="text-muted">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={v.metalPurity}
+            onChange={(e) => onChange({ metalPurity: e.target.value })}
+            placeholder="18K, 21K, 22K, 925"
+            className="input-field w-full h-10 px-3 text-[13px]"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-medium text-primary">
+            Gemstone <span className="text-muted">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={v.gemstoneType}
+            onChange={(e) => onChange({ gemstoneType: e.target.value })}
+            placeholder="Diamond, Ruby, Pearl"
+            className="input-field w-full h-10 px-3 text-[13px]"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-medium text-primary">
+            Gemstone Color <span className="text-muted">(optional)</span>
+          </label>
+          <input
+            type="text"
+            value={v.gemstoneColor}
+            onChange={(e) => onChange({ gemstoneColor: e.target.value })}
+            placeholder="White, Red, Blue"
             className="input-field w-full h-10 px-3 text-[13px]"
           />
         </div>
@@ -283,7 +319,7 @@ export const VariationFields = ({
             type="text"
             value={v.sku}
             onChange={(e) => onChange({ sku: e.target.value.toUpperCase() })}
-            placeholder="KACCHI-H"
+            placeholder="RING-18K-001"
             className="input-field w-full h-10 px-3 text-[13px] font-mono"
           />
         </div>
@@ -313,13 +349,25 @@ export const VariationFields = ({
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <label className="text-[13px] font-medium text-primary">
-            Quantity Label <span className="text-muted">(optional)</span>
+            Size <span className="text-muted">(optional)</span>
           </label>
           <input
             type="text"
-            value={v.quantityLabel}
-            onChange={(e) => onChange({ quantityLabel: e.target.value })}
-            placeholder="1 Person"
+            value={v.size}
+            onChange={(e) => onChange({ size: e.target.value })}
+            placeholder="6, 7, 8 or Adjustable"
+            className="input-field w-full h-10 px-3 text-[13px]"
+          />
+        </div>
+        <div className="space-y-1.5">
+          <label className="text-[13px] font-medium text-primary">
+            Weight (g) <span className="text-muted">(optional)</span>
+          </label>
+          <input
+            type="number"
+            value={v.weight}
+            onChange={(e) => onChange({ weight: e.target.value })}
+            placeholder="2.50"
             className="input-field w-full h-10 px-3 text-[13px]"
           />
         </div>
@@ -337,35 +385,35 @@ export const VariationFields = ({
         </div>
       </div>
 
-      {/* Kitchen/Chef + Spice level */}
+      {/* Material + target customer */}
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
           <label className="text-[13px] font-medium text-primary">
-            Kitchen / Chef <span className="text-muted">(optional)</span>
+            Material <span className="text-muted">(optional)</span>
           </label>
           <input
             type="text"
-            value={v.kitchen_chef}
-            onChange={(e) => onChange({ kitchen_chef: e.target.value })}
-            placeholder="Chef Karim"
+            value={v.material}
+            onChange={(e) => onChange({ material: e.target.value })}
+            placeholder="14K gold with natural diamond"
             className="input-field w-full h-10 px-3 text-[13px]"
           />
         </div>
         <div className="space-y-1.5">
           <label className="text-[13px] font-medium text-primary">
-            Spice Level
+            For <span className="text-muted">(optional)</span>
           </label>
           <select
-            value={v.spice_level}
+            value={v.gender}
             onChange={(e) =>
-              onChange({ spice_level: e.target.value as SpiceLevel })
+              onChange({ gender: e.target.value as JewelleryGender })
             }
             className="input-field w-full h-10 px-3 text-[13px]"
           >
-            <option value="">None</option>
-            <option value="Mild">Mild</option>
-            <option value="Medium">Medium</option>
-            <option value="Hot">Hot</option>
+            <option value="Unisex">Unisex</option>
+            <option value="Women">Women</option>
+            <option value="Men">Men</option>
+            <option value="Kids">Kids</option>
           </select>
         </div>
       </div>
@@ -403,11 +451,11 @@ export const VariationFields = ({
         <label className="flex items-center gap-2 text-[13px] text-primary cursor-pointer">
           <input
             type="checkbox"
-            checked={v.isOpen}
-            onChange={(e) => onChange({ isOpen: e.target.checked })}
+            checked={v.isAvailable}
+            onChange={(e) => onChange({ isAvailable: e.target.checked })}
             className="w-4 h-4"
           />
-          Available for order
+          Available for sale
         </label>
         <label className="flex items-center gap-2 text-[13px] text-primary cursor-pointer">
           <input

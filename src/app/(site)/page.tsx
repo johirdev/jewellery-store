@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import HeroBanner from "../components/Clients/Banner/HeroBanner";
-import FoodCategory from "../components/Clients/FoodCategory/FoodCategory";
+import FoodCategory from "../components/Clients/ItemsCategory/ItemsCategory";
 import ShowFoodItems from "../components/Clients/FoodItems/ShowFoodItems";
 import CoolDrinks, { CoolDrinksSkeleton } from "../components/Clients/CoolDrinks/CoolDrinks";
 import VideoBlog from "../components/Clients/VideoBlog/VideoBlog";
